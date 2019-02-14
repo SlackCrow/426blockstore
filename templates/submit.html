@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>submit</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+      <nav class="navbar navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">CSE4/510 Lab1</a>
+</nav>
+
+<br>
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+  
+<div class="form-group">
+    <label for="exampleFormControlTextarea1">Item name</label>
+    <input type="email" class="form-control" id="itemName" >
+    <br>
+    <label for="exampleFormControlTextarea1">Item detail</label>
+    <textarea class="form-control" id="itemDetail" rows="3"></textarea>
+    <br>
+    <button type="button" id="subbut" class="btn btn-outline-primary" onclick="submitNow()">submit</button>
+  </div>
+  </div>
+  </div>
+  </div>
+</body>
+<script>
+    function submitNow() {
+      console.log(document.getElementById("itemName").value);
+      console.log(document.getElementById("itemDetail").value);
+    }
+</script>
+</html>

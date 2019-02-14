@@ -11,6 +11,7 @@ loginList = list()
 def index():
     return render_template('index.html')
 
+
 @app.route('/getListings')
 def returnListings():
     dictToReturn = dict()
@@ -20,6 +21,10 @@ def returnListings():
     dictToReturn['test3'] = ['Test 3','Sold','Test Item 3']
 
     return json.dumps(dictToReturn)
+
+@app.route('/submit')
+def submitNow():
+    return render_template('submit.html')
 
 @app.route('/my')
 def returnMyPage():
@@ -38,7 +43,7 @@ def login():
         else:
             global loginList
             loginList.append(request.remote_addr)
-            return redirect("http://localhost:5000/", code=302)
+        return redirect("http://localhost:5000/", code=302)
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
