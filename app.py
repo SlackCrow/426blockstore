@@ -24,9 +24,9 @@ def returnListings():
 @app.route('/my')
 def returnMyPage():
     if request.remote_addr in loginList:
-        return render_template('index.html')
+        return redirect("http://localhost:5000/", code=302)
     else:
-        return render_template('login.html')
+        return redirect("http://localhost:5000/login", code=302)
 
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
@@ -38,7 +38,7 @@ def login():
         else:
             global loginList
             loginList.append(request.remote_addr)
-            return render_template('index.html')
+            return redirect("http://localhost:5000/", code=302)
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
