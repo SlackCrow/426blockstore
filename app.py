@@ -9,8 +9,11 @@ def index():
 @app.route('/getListings')
 def returnListings():
     dictToReturn = dict()
-    listToReturn = ['Test1','Active','Test Item']
+    listToReturn = ['Test 1','Active','Test Item']
     dictToReturn['test1'] = listToReturn
+    dictToReturn['test2'] = ['Test 2','Sold','Test Item 2']
+    dictToReturn['test3'] = ['Test 3','Sold','Test Item 3']
+
     return json.dumps(dictToReturn)
 
 if __name__ == '__main__':

@@ -24,16 +24,7 @@
 
         <div class="container"> 
             <div class="row"> 
-                    <div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-body">
-                                <h4 class="card-title">Item Name</h4>
-                                <h5 class="card-status">Status: Active</h5>
-                                <p class="card-text">This is a simple description about the item.</p>
-                                <a href="#" class="btn btn-primary">Check it out</a>
-                            </div>
-                        </div>
-                    </div>
+                <p id="p1"></p>
             </div>
           </div>
           
@@ -44,6 +35,29 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
 <script>
-
+  var request = new XMLHttpRequest();
+  request.open('GET', 'http://localhost:5000/getListings', true);
+  request.onload = function () {
+    var data = JSON.parse(this.response);
+    for(var listing in data)
+    {
+      console.log(listing);
+      console.log(data[listing][0])
+      console.log(data[listing][1])
+      console.log(data[listing][2])
+      document.getElementById("p1").innerHTML = document.getElementById("p1").innerHTML +
+                        "<div class=\"col\">" +
+                        "<div class=\"card\" style=\"width: 18rem;\">" +
+                        "<div class=\"card-body\">" +
+                        "<h4 class=\"card-title\">" + data[listing][0] + "</h4>" +
+                        "<h5 class=\"card-status\">Status: " + data[listing][1] + "</h5>" +
+                        "<p class=\"card-text\">" + data[listing][2] + "</p>" + 
+                        "<a href=\"#\" class=\"btn btn-primary\">Check it out</a>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+    }
+  }
+  request.send();
 </script>
 </html>
