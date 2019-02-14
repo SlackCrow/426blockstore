@@ -5,6 +5,8 @@ import json
 app = Flask(__name__)
 CORS(app)
 
+loginList = list()
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -19,6 +21,13 @@ def returnListings():
 
     return json.dumps(dictToReturn)
 
+@app.route('/my')
+def returnMyPage():
+    if request.remote_addr in loginList:
+        return render_template('index.html')
+    else:
+        return render_template('login.html')
+
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -27,6 +36,8 @@ def login():
         if request.form['username'] != 'admin' or request.form['password'] != 'admin':
             error = 'Invalid Credentials. Please try again.'
         else:
+            global loginList
+            loginList.append(request.remote_addr)
             return render_template('index.html')
     return render_template('login.html', error=error)
 
