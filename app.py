@@ -19,21 +19,12 @@ listing_table = db.table('listing_table')
 user = None
 
 
-# ip_user.insert({
-#     'ip': 'ip here',
-#     'user_id': 'user_id here'
-# })
-
 # user_table.insert({
+#   'ip': 'ip here',
 #   'user_id': '1',
 #   'user_name': 'admin',
 #   'password': 'admin',
 #   'funds': 100,
-#   'listings': [
-#     'test1',
-#     'test2',
-#     'test3'
-#   ]
 # })
 #
 # listing_table.insert({
@@ -46,6 +37,29 @@ user = None
 #     'date_listed': '2/15/19',
 #     'date_sold': '2/16/19'
 # })
+
+def add_new_user(username, password):
+    count = 0
+    for user in user_table:
+        count = count + 1
+    user_id = count + 1
+    user_table.insert({
+        'ip': request.remote_addr,
+        'user_id': user_id,
+        'username': username,
+        'password': password,
+        'funds': 0
+    })
+    return
+
+def add_new_listing():
+    count = 0
+    for item in listing_table:
+        count = count + 1
+    listing_id = count + 1
+    listing_table.insert({
+
+    })
 
 @app.route('/')
 def index():
