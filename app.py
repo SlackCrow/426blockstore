@@ -13,10 +13,17 @@ dictToReturn = dict()
 
 
 db = TinyDB('database/db.json')
+ip_user = db.table('ip_user')
 user_table = db.table('user_table')
 listing_table = db.table('listing_table')
 user = None
-#
+
+
+# ip_user.insert({
+#     'ip': 'ip here',
+#     'user_id': 'user_id here'
+# })
+
 # user_table.insert({
 #   'user_id': '1',
 #   'user_name': 'admin',
@@ -42,7 +49,10 @@ user = None
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if request.remote_addr in loginList:
+        return render_template('index.html')
+    else:
+        return redirect("http://localhost:5000/login", code=302)
 
 @app.route('/funds', methods=['GET','POST'])
 def add_funds():
