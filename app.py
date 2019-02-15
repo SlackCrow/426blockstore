@@ -83,7 +83,7 @@ def index():
     if request.remote_addr in loginList:
         return render_template('index.html')
     else:
-        return redirect("http://localhost:5000/login", code=302)
+        return render_template('index.html')
 
 @app.route('/funds', methods=['GET','POST'])
 def add_funds():
@@ -107,6 +107,12 @@ def createAccount():
 def returnListings():
     global dictToReturn
     return json.dumps(dictToReturn)
+
+@app.route('/getItem', methods=['GET','POST'])
+def getItem():
+    itemID = request.args.get('item')
+    print(itemID)
+    return render_template('index.html') 
 
 @app.route('/submit', methods=['GET','POST'])
 def submitNow():
