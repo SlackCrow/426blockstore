@@ -44,6 +44,15 @@ user = None
 def index():
     return render_template('index.html')
 
+@app.route('/funds', methods=['GET','POST'])
+def add_funds():
+    if request.remote_addr in loginList:
+        if request.method == 'POST':
+            print(request.form['funds'])
+            return render_template("index.html")
+        return render_template('funds.html')
+    else:
+        return redirect("http://localhost:5000/login", code=302)
 @app.route('/createAccount', methods=['GET', 'POST'])
 def createAccount():
     return render_template('create_account.html')
