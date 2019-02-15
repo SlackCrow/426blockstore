@@ -15,6 +15,7 @@ dictToReturn = dict()
 db = TinyDB('database/db.json')
 user_table = db.table('user_table')
 listing_table = db.table('listing_table')
+user = None
 #
 # user_table.insert({
 #   'user_id': '1',
