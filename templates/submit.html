@@ -27,7 +27,8 @@
           request.form.description }}"></textarea>
         <br>
         <label for="exampleFormControlTextarea1">Price</label>
-        <input type="email" class="form-control" id="itemPrice" >
+        <input type="number" class="form-control" id="itemPrice" name="price" value="{{
+          request.form.price }}">
         <input class="btn btn-primary" type="submit" value="Submit">
     </form>
   </div>

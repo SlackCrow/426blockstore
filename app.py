@@ -2,11 +2,15 @@ from flask import Flask, render_template, redirect, url_for, request
 from tinydb import TinyDB, Query
 from flask_cors import CORS
 import json
+import uuid
+
 
 app = Flask(__name__)
 CORS(app)
 
 loginList = list()
+dictToReturn = dict()
+
 
 db = TinyDB('database/db.json')
 user_table = db.table('user_table')
@@ -35,21 +39,17 @@ listing_table = db.table('listing_table')
 #     'date_sold': '2/16/19'
 # })
 
-
-
 @app.route('/')
 def index():
     return render_template('index.html')
 
+@app.route('/createAccount', methods=['GET', 'POST'])
+def createAccount():
+    return render_template('create_account.html')
 
 @app.route('/getListings')
 def returnListings():
-    dictToReturn = dict()
-    listToReturn = ['Test 1','Active','Test Item']
-    dictToReturn['test1'] = listToReturn
-    dictToReturn['test2'] = ['Test 2','Sold','Test Item 2']
-    dictToReturn['test3'] = ['Test 3','Sold','Test Item 3']
-
+    global dictToReturn
     return json.dumps(dictToReturn)
 
 @app.route('/submit', methods=['GET','POST'])
@@ -57,6 +57,9 @@ def submitNow():
     if request.method == 'POST':
         print(request.form['title'])
         print(request.form['description'])
+        print(request.form['price'])
+        global dictToReturn
+        dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description']]
         # listing_table.insert({
         #     'user_id': '1',
         #     'listing_id': '1',
