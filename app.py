@@ -52,12 +52,22 @@ def add_new_user(username, password):
     })
     return
 
-def add_new_listing():
+def add_new_listing(title, description, price):
     count = 0
     for item in listing_table:
         count = count + 1
     listing_id = count + 1
+    User = Query()
+    print()
     listing_table.insert({
+        'user_id': ((user_table.search(User.username == currentUser))[0])['user_id'],
+        'listing_id': listing_id,
+        'title': title,
+        'description': description,
+        'price': price,
+        'status': 'For sale',
+        'date_listed': 'date1',
+        'date_sold': 'NULL'
 
     })
 
@@ -77,8 +87,12 @@ def add_funds():
         return render_template('funds.html')
     else:
         return redirect("http://localhost:5000/login", code=302)
+
 @app.route('/createAccount', methods=['GET', 'POST'])
 def createAccount():
+    if request.method == 'POST':
+        add_new_user(request.form['username'], request.form['password'])
+        return redirect("http://localhost:5000/login", code=302)
     return render_template('create_account.html')
 
 @app.route('/getListings')
@@ -90,21 +104,12 @@ def returnListings():
 def submitNow():
     if request.remote_addr in loginList:
         if request.method == 'POST':
+            add_new_listing(request.form['title'], request.form['description'], request.form['price'])
             print(request.form['title'])
             print(request.form['description'])
             print(request.form['price'])
             global dictToReturn
             dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description'],request.form['price']]
-            # listing_table.insert({
-            #     'user_id': '1',
-            #     'listing_id': '1',
-            #     'title': 'FlexTape',
-            #     'price': 10,
-            #     'description': 'FLEX TAPE!!!',
-            #     'status': 'SOLD',
-            #     'date_listed': '2/15/19',
-            #     'date_sold': '2/16/19'
-            # })
             return redirect("http://localhost:5000/", code=302) 
         return render_template('submit.html')
     else:
@@ -127,6 +132,8 @@ def login():
         else:
             global loginList
             loginList.append(request.remote_addr)
+            global currentUser
+            currentUser = request.form['username']
         return redirect("http://localhost:5000/", code=302)
     return render_template('login.html', error=error)
 
