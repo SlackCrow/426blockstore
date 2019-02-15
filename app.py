@@ -71,6 +71,13 @@ def add_new_listing(title, description, price):
 
     })
 
+def valid_user(username,password):
+    User = Query()
+    if(len(user_table.search(User.username == username)) > 0):
+        if(((user_table.search(User.username == username))[0])['password'] == password):
+            return True
+    return False
+
 @app.route('/')
 def index():
     if request.remote_addr in loginList:
@@ -80,9 +87,10 @@ def index():
 
 @app.route('/funds', methods=['GET','POST'])
 def add_funds():
+    User = Query()
     if request.remote_addr in loginList:
         if request.method == 'POST':
-            print(request.form['funds'])
+            user_table.update({'funds': request.form['funds']}, {User.username == currentUser})
             return render_template("index.html")
         return render_template('funds.html')
     else:
@@ -105,9 +113,6 @@ def submitNow():
     if request.remote_addr in loginList:
         if request.method == 'POST':
             add_new_listing(request.form['title'], request.form['description'], request.form['price'])
-            print(request.form['title'])
-            print(request.form['description'])
-            print(request.form['price'])
             global dictToReturn
             dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description'],request.form['price']]
             return redirect("http://localhost:5000/", code=302) 
@@ -127,13 +132,13 @@ def returnMyPage():
 def login():
     error = None
     if request.method == 'POST':
-        if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-            error = 'Invalid Credentials. Please try again.'
-        else:
+        if valid_user(request.form['username'], request.form['password']):
             global loginList
             loginList.append(request.remote_addr)
             global currentUser
             currentUser = request.form['username']
+        else:
+            error = 'Invalid Credentials. Please try again.'
         return redirect("http://localhost:5000/", code=302)
     return render_template('login.html', error=error)
 
