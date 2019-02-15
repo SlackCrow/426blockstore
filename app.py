@@ -94,7 +94,7 @@ def submitNow():
             print(request.form['description'])
             print(request.form['price'])
             global dictToReturn
-            dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description']]
+            dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description'],request.form['price']]
             # listing_table.insert({
             #     'user_id': '1',
             #     'listing_id': '1',

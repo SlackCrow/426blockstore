@@ -38,6 +38,7 @@
   request.open('GET', 'http://localhost:5000/getListings', true);
   request.onload = function () {
     var data = JSON.parse(this.response);
+    console.log(data);
     for(var listing in data) 
     {
       console.log(listing);
@@ -51,6 +52,7 @@
                         "<div class=\"card-body\">" +
                         "<h4 class=\"card-title\">" + data[listing][0] + "</h4>" +
                         "<h5 class=\"card-status\">Status: " + data[listing][1] + "</h5>" +
+                        "<h6 class=\"card-status\">Price: $" + data[listing][3] + "</h6>" +
                         "<p class=\"card-text\">" + data[listing][2] + "</p>" + 
                         "<a href=\"#\" class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
