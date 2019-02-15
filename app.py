@@ -55,23 +55,27 @@ def returnListings():
 
 @app.route('/submit', methods=['GET','POST'])
 def submitNow():
-    if request.method == 'POST':
-        print(request.form['title'])
-        print(request.form['description'])
-        print(request.form['price'])
-        global dictToReturn
-        dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description']]
-        # listing_table.insert({
-        #     'user_id': '1',
-        #     'listing_id': '1',
-        #     'title': 'FlexTape',
-        #     'price': 10,
-        #     'description': 'FLEX TAPE!!!',
-        #     'status': 'SOLD',
-        #     'date_listed': '2/15/19',
-        #     'date_sold': '2/16/19'
-        # })
-    return render_template('submit.html')
+    if request.remote_addr in loginList:
+        if request.method == 'POST':
+            print(request.form['title'])
+            print(request.form['description'])
+            print(request.form['price'])
+            global dictToReturn
+            dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description']]
+            # listing_table.insert({
+            #     'user_id': '1',
+            #     'listing_id': '1',
+            #     'title': 'FlexTape',
+            #     'price': 10,
+            #     'description': 'FLEX TAPE!!!',
+            #     'status': 'SOLD',
+            #     'date_listed': '2/15/19',
+            #     'date_sold': '2/16/19'
+            # })
+            return redirect("http://localhost:5000/", code=302) 
+        return render_template('submit.html')
+    else:
+        return redirect("http://localhost:5000/login", code=302)
 
 @app.route('/my')
 def returnMyPage():
