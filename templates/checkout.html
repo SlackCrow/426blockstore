@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>submit</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+      <nav class="navbar navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">CSE4/510 Lab1</a>
+</nav>
+
+<br>
+<div class="container">
+    <div class="row">
+      <div class="col-sm">
+
+<div class="form-group">
+Here is the item you are buying:
+  </div>
+  </div>
+  </div>
+  </div>
+</body>
+<script>
+    var request = new XMLHttpRequest();
+    request.open('GET', 'http://localhost:5000/getItem', true);
+    request.onload = function () {
+    
+        var data = JSON.parse(this.response);
+        document.getElementById("p1").innerHTML = document.getElementById("p1").innerHTML +
+                        "<div class=\"col\">" +
+                        "<div class=\"card\" style=\"width: 18rem;\">" +
+                        "<div class=\"card-body\">" +
+                        "<h4 class=\"card-title\">" + data[listing]["title"] + "</h4>" +
+                        "<h5 class=\"card-status\">Status: " + data[listing]["status"] + "</h5>" +
+                        "<h6 class=\"card-status\">Price: $" + data[listing]["price"] + "</h6>" +
+                        "<p class=\"card-text\">" + data[listing]["description"] + "</p>" + 
+                        "<a href=\"http://localhost:5000/getItem?item=" + data[listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+    }
+    request.send();
+
+    request.open('GET', 'http://localhost:5000/getUserFunds', true);
+    request.onload = function(){
+        var data = this.response;
+        document.getElementById("p1").innerHTML = document.getElementById("p1").innerHTML + 
+        "<br><div> " + data + "</div>"
+    }
+</script>
+</html>

@@ -10,6 +10,8 @@ CORS(app)
 loginList = list()
 dictToReturn = dict()
 
+loginMap = dict()
+
 
 db = TinyDB('database/db.json')
 ip_user = db.table('ip_user')
@@ -103,16 +105,32 @@ def createAccount():
         return redirect("http://localhost:5000/login", code=302)
     return render_template('create_account.html')
 
+
 @app.route('/getListings')
 def returnListings():
     global dictToReturn
     return json.dumps(listing_table.all())
 
+@app.route('/myListings')
+def returnMyListings():
+    userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
+    return (json.dumps(listing_table.search(where('user_id') == userId)))
+
+
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
+    Listing = Query()
     itemID = request.args.get('item')
-    print(itemID)
-    return render_template('index.html') 
+    if request.method == 'GET':
+        return json.dumps(listing_table.search(Listing.listing_id == itemID))
+    return render_template('checkout.html')
+
+@app.route('/getUser', methods=['GET', 'POST'])
+def getUserFunds():
+    User = Query()
+    if(request.method == 'GET'):
+        return user_table.search(User.username == currentUser)[0]['funds']
+        
 
 @app.route('/submit', methods=['GET','POST'])
 def submitNow():
@@ -129,7 +147,7 @@ def submitNow():
 @app.route('/my')
 def returnMyPage():
     if request.remote_addr in loginList:
-        return redirect("http://localhost:5000/", code=302)
+        return render_template('my.html')
     else:
         return redirect("http://localhost:5000/login", code=302)
 
@@ -140,6 +158,8 @@ def login():
     if request.method == 'POST':
         if valid_user(request.form['username'], request.form['password']):
             global loginList
+            global loginMap
+            loginMap[request.remote_addr] = request.form['username']
             loginList.append(request.remote_addr)
             global currentUser
             currentUser = request.form['username']
