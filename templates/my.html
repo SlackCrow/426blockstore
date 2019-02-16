@@ -12,7 +12,7 @@
 
   
     <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="#">CSE4/510 Lab1</a>
+            <a class="navbar-brand" href="http://localhost:5000">CSE4/510 Lab1</a>
             <ul class="nav nav-pills">
                     <li class="nav-item">
                       <a class="nav-link" href="http://localhost:5000/submit">Create a listing</a>
@@ -23,13 +23,17 @@
                     <li class="nav-item">
                       <a class="nav-link" href="http://localhost:5000/funds">Add funds</a>
                     </li>
-                  </ul>
+                  </ul>                  
                   </nav>
         <br>
 
         <div class="container"> 
-                <h3>My Listings</h3>
+                <span class="badge badge-primary" id="b1">Balance: $</span>
+                <h3>Active</h3> 
                 <div class="row" id="p1"></div>
+                <br>
+                <h3>Sold</h3>
+                <div class="row" id="p2"></div>
           </div>
           
 </body>
@@ -39,27 +43,64 @@
   request.onload = function () {
     var data = JSON.parse(this.response);
     console.log(data);
-    for(var listing in data) 
+    document.getElementById("b1").innerHTML = document.getElementById("b1").innerHTML + addComma(data[1]["funds"].toString());
+    for(var listing in data[0]) 
     {
       console.log(listing);
-      console.log(data[listing]["user_id"]);
       console.log(document.getElementById("p1").innerHTML);
+      if(data[0][listing]["status"] == "Sold")
+      {
+        document.getElementById("p2").innerHTML = document.getElementById("p2").innerHTML +
+                        "<div class=\"col\">" +
+                        "<div class=\"card\" style=\"width: 18rem;\">" +
+                        "<div class=\"card-body\">" +
+                        "<h4 class=\"card-title\">" + data[0][listing]["title"] + "</h4>" +
+                        "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
+                        "<h6 class=\"card-status\">Price: $" + data[0][listing]["price"] + "</h6>" +
+                        "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
+                        "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "</div>" +
+                        "</div>" +
+                        "</div>";
+      }
+      else
+      {
       document.getElementById("p1").innerHTML = document.getElementById("p1").innerHTML +
                         "<div class=\"col\">" +
                         "<div class=\"card\" style=\"width: 18rem;\">" +
                         "<div class=\"card-body\">" +
-                        "<h4 class=\"card-title\">" + data[listing]["title"] + "</h4>" +
-                        "<h5 class=\"card-status\">Status: " + data[listing]["status"] + "</h5>" +
-                        "<h6 class=\"card-status\">Price: $" + data[listing]["price"] + "</h6>" +
-                        "<p class=\"card-text\">" + data[listing]["description"] + "</p>" + 
-                        "<a href=\"http://localhost:5000/getItem?item=" + data[listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "<h4 class=\"card-title\">" + data[0][listing]["title"] + "</h4>" +
+                        "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
+                        "<h6 class=\"card-status\">Price: $" + addComma(data[0][listing]["price"]) + "</h6>" +
+                        "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
+                        "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
                         "</div>" +
                         "</div>";
     }
     console.log(document.getElementById("p1").innerHTML);
+    }
 
   }
   request.send();
+
+  function addComma(str)
+  {
+    toReturn = ""
+    counter = 0
+    for(i=str.length-1; i>=0; i--)
+    {
+        if(counter == 3)
+        {
+            counter = 0;
+            toReturn = ',' + toReturn;
+        }
+        {
+            toReturn = str.charAt(i) + toReturn;
+            counter++;
+        }
+    }
+    return toReturn;
+  }
 </script>
 </html>

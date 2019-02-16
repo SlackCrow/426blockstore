@@ -114,8 +114,7 @@ def returnListings():
 @app.route('/myListings')
 def returnMyListings():
     userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
-    return (json.dumps(listing_table.search(where('user_id') == userId)))
-
+    return (json.dumps([listing_table.search(where('user_id') == userId),user_table.search(where('username') == loginMap[request.remote_addr])[0]]))
 
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
