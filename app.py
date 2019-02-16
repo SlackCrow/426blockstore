@@ -1,5 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
-from tinydb import TinyDB, Query
+from tinydb import TinyDB, Query, where
 from flask_cors import CORS
 import json
 import uuid
@@ -90,7 +90,7 @@ def add_funds():
     User = Query()
     if request.remote_addr in loginList:
         if request.method == 'POST':
-            user_table.update({'funds': request.form['funds']}, {User.username == currentUser})
+            user_table.update({'funds': int(request.form['funds'])}, where('username') == currentUser)
             return render_template("index.html")
         return render_template('funds.html')
     else:
