@@ -2,7 +2,6 @@ from flask import Flask, render_template, redirect, url_for, request
 from tinydb import TinyDB, Query, where
 from flask_cors import CORS
 import json
-import uuid
 
 
 app = Flask(__name__)
@@ -70,6 +69,7 @@ def add_new_listing(title, description, price):
         'date_sold': 'NULL'
 
     })
+    return listing_id
 
 def valid_user(username,password):
     User = Query()
@@ -106,7 +106,7 @@ def createAccount():
 @app.route('/getListings')
 def returnListings():
     global dictToReturn
-    return json.dumps(dictToReturn)
+    return json.dumps(listing_table.all())
 
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
@@ -118,9 +118,9 @@ def getItem():
 def submitNow():
     if request.remote_addr in loginList:
         if request.method == 'POST':
-            add_new_listing(request.form['title'], request.form['description'], request.form['price'])
+            itemId = add_new_listing(request.form['title'], request.form['description'], request.form['price'])
             global dictToReturn
-            dictToReturn[str(uuid.uuid4())] = [request.form['title'],'Active',request.form['description'],request.form['price']]
+            dictToReturn[itemId] = [request.form['title'],'Active',request.form['description'],request.form['price']]
             return redirect("http://localhost:5000/", code=302) 
         return render_template('submit.html')
     else:

@@ -42,19 +42,17 @@
     for(var listing in data) 
     {
       console.log(listing);
-      console.log(data[listing][0]);
-      console.log(data[listing][1]);
-      console.log(data[listing][2]);
+      console.log(data[listing]["user_id"]);
       console.log(document.getElementById("p1").innerHTML);
       document.getElementById("p1").innerHTML = document.getElementById("p1").innerHTML +
                         "<div class=\"col\">" +
                         "<div class=\"card\" style=\"width: 18rem;\">" +
                         "<div class=\"card-body\">" +
-                        "<h4 class=\"card-title\">" + data[listing][0] + "</h4>" +
-                        "<h5 class=\"card-status\">Status: " + data[listing][1] + "</h5>" +
-                        "<h6 class=\"card-status\">Price: $" + data[listing][3] + "</h6>" +
-                        "<p class=\"card-text\">" + data[listing][2] + "</p>" + 
-                        "<a href=\"http://localhost:5000/getItem?item=" + listing +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "<h4 class=\"card-title\">" + data[listing]["title"] + "</h4>" +
+                        "<h5 class=\"card-status\">Status: " + data[listing]["status"] + "</h5>" +
+                        "<h6 class=\"card-status\">Price: $" + data[listing]["price"] + "</h6>" +
+                        "<p class=\"card-text\">" + data[listing]["description"] + "</p>" + 
+                        "<a href=\"http://localhost:5000/getItem?item=" + data[listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
                         "</div>" +
                         "</div>";
