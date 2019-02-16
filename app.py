@@ -118,10 +118,69 @@ def returnMyListings():
 
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
+    if not request.remote_addr in loginList:
+        return redirect("http://localhost:5000/login", code=302)
     Listing = Query()
     itemID = request.args.get('item')
+    item = listing_table.search(Listing.listing_id == int(itemID))[0]
     if request.method == 'GET':
-        return json.dumps(listing_table.search(Listing.listing_id == itemID))
+        return """
+        <!DOCTYPE html>
+<html>
+<head>
+    <title>Lab 1</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+  
+    <nav class="navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="http://localhost:5000">CSE4/510 Lab1</a>
+            <ul class="nav nav-pills">
+                    <li class="nav-item">
+                      <a class="nav-link" href="http://localhost:5000/submit">Create a listing</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="http://localhost:5000/my">My Page</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="http://localhost:5000/funds">Add funds</a>
+                    </li>
+                  </ul>
+                  </nav>
+        <br>
+
+
+        <div class="container"> 
+        <span class="badge badge-primary" id="b1">Balance: $""" + str(user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']) +"""</span>
+                <div class="row" id="p1">
+                <h1>Checkout</h1>  """  + """
+                    <div class="col-sm-6">
+                     <div class="card">
+                        <div class="card-body">
+                        <h4 class="card-title">
+                        Title: """ + item['title'] + """
+                        </h4>
+                        <h6 > Price: $""" + item['price'] +  """
+                        
+                        </h6>
+                        <br>
+                        <p class="card-text"> """ + item['description'] + """</p>
+                        <a href="http://localhost:5000/buy?itemID """ + """" class="btn btn-primary">Buy</a>
+                    </div>
+                </div>
+                </div>
+
+                </div>
+          </div>
+          </body>
+</html>
+        """
+        return json.dumps(listing_table.search(Listing.listing_id == int(itemID)))
     return render_template('checkout.html')
 
 @app.route('/getUser', methods=['GET', 'POST'])
