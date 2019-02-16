@@ -1,10 +1,11 @@
-from flask import Flask, render_template, redirect, url_for, request
+from flask import Flask, render_template, redirect, url_for, request, flash
 from tinydb import TinyDB, Query, where
 from flask_cors import CORS
 import json
 
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\nG\xec]/'
 CORS(app)
 
 loginList = list()
@@ -116,6 +117,24 @@ def returnMyListings():
     userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
     return (json.dumps([listing_table.search(where('user_id') == userId),user_table.search(where('username') == loginMap[request.remote_addr])[0]]))
 
+@app.route('/buy', methods=['GET','POST'])
+def buyItem():
+    itemID = request.args.get('itemID')
+    Listing = Query()
+    item = listing_table.search(Listing.listing_id == int(itemID))[0]
+    price = int(item['price'])
+    balance = user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']
+    if item['status'] == 'Sold':
+        flash('Already sold')
+    else:
+        if balance - price > 0:
+            user_table.update({'funds': balance-price}, where('username') == currentUser)
+            listing_table.update({'status': 'Sold'}, where('listing_id') == int(itemID))
+            flash('Successfully purchased')
+        else:
+            flash('Not enough fund')
+    return redirect("http://localhost:5000/", code=302)
+
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
     if not request.remote_addr in loginList:
@@ -170,7 +189,7 @@ def getItem():
                         </h6>
                         <br>
                         <p class="card-text"> """ + item['description'] + """</p>
-                        <a href="http://localhost:5000/buy?itemID """ + """" class="btn btn-primary">Buy</a>
+                        <a href="http://localhost:5000/buy?itemID=""" + str(itemID)+ """" class="btn btn-primary">Buy</a>
                     </div>
                 </div>
                 </div>
