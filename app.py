@@ -127,6 +127,7 @@ def add_new_listing(title, description, price):
     listing_id = count + 1
     User = Query()
     print()
+    add_listing_blockchain(((user_table.search(User.username == currentUser))[0])['user_id'],listing_id, title, description,price, "For sale", "date1", "NULL")
     listing_table.insert({
         'user_id': ((user_table.search(User.username == currentUser))[0])['user_id'],
         'listing_id': listing_id,
@@ -193,6 +194,8 @@ def returnListings():
 @app.route('/myListings')
 def returnMyListings():
     userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
+    balance = w3.fromWei(w3.eth.getBalance(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']), 'ether')
+    user_table.update({'funds': int(balance)}, where('username') == currentUser)
     return (json.dumps([listing_table.search(where('user_id') == userId),user_table.search(where('username') == loginMap[request.remote_addr])[0]]))
 
 @app.route('/buy', methods=['GET','POST'])
@@ -201,6 +204,8 @@ def buyItem():
     Listing = Query()
     item = listing_table.search(Listing.listing_id == int(itemID))[0]
     price = int(item['price'])
+    balanceFromBlockchain = w3.fromWei(w3.eth.getBalance(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']), 'ether')
+    user_table.update({'funds': int(balanceFromBlockchain)}, where('username') == currentUser)
     balance = user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']
     address = user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']
     if(address == ''):
