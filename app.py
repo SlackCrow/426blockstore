@@ -1,10 +1,23 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from tinydb import TinyDB, Query, where
-from web3 import Web3, HTTPProvider, contract
 from flask_cors import CORS
+from web3 import Web3, HTTPProvider, contract
 import json
+import time
 
+# Contract setupp
+contract_address = "0x3374df6907edB97AFcC9e2D614F0c4B4c9E20308"
+infura_url = "https://ropsten.infura.io/v3/806041cdff964ee0b2cbd2ef55cb3122"
+wallet_address = "0xE75D9DE667F7FFaCD7a300E02dc4e6654598cA77"
+wallet_private_key = "2CE8FABF78D208C16CC4C9A6A379AD83BD8AFAEB52B82CA918B4670D71B9EF42"
 
+with open("abi.json") as f:
+    info_json = json.load(f)
+abi = info_json
+
+w3 = Web3(HTTPProvider(infura_url))
+w3.eth.enable_unaudited_features()
+contract = w3.eth.contract(address = contract_address, abi = abi)
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\nG\xec]/'
 CORS(app)
@@ -40,6 +53,57 @@ user = None
 #     'date_listed': '2/15/19',
 #     'date_sold': '2/16/19'
 # })
+
+def proccess_transaction_blockchain(txn_dict):
+    signed_txn = w3.eth.account.signTransaction(txn_dict, private_key=wallet_private_key)
+    result = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+    tx_receipt = w3.eth.getTransactionReceipt(result)
+    count = 0
+    while tx_receipt is None and (count < 30):
+        time.sleep(10)
+
+        tx_receipt = w3.eth.getTransactionReceipt(result)
+
+        print(tx_receipt)
+
+    if tx_receipt is None:
+        print("Transaction failed!")
+        return False
+    return True
+
+def add_listing_blockchain(listing_id, user_id, title, description, price, status, date_listed, date_sold):
+    nonce = w3.eth.getTransactionCount(wallet_address)
+
+    txn_dict = contract.functions.addListing(int(listing_id), int(user_id), title, description, int(price), status, date_listed, date_sold).buildTransaction({
+        'chainId': 3,
+        'gas': 1400000,
+        'gasPrice': w3.toWei('40', 'gwei'),
+        'nonce': nonce,
+    })
+    proccess_transaction_blockchain(txn_dict)
+
+
+def settle_payment_blockchain(listing_id, buyer_id, seller_id):
+    nonce = w3.eth.getTransactionCount(wallet_address)
+
+    txn_dict = contract.functions.settlePayment(int(listing_id), int(buyer_id), int(seller_id)).buildTransaction({
+        'chainId': 3,
+        'gas': 1400000,
+        'gasPrice': w3.toWei('40', 'gwei'),
+        'nonce': nonce,
+    })
+    proccess_transaction_blockchain(txn_dict)
+
+def add_new_user_blockchain(user_id, username, password):
+    nonce = w3.eth.getTransactionCount(wallet_address)
+
+    txn_dict = contract.functions.addUser(int(user_id), username, password, 1000).buildTransaction({
+        'chainId': 3,
+        'gas': 140000,
+        'gasPrice': w3.toWei('40', 'gwei'),
+        'nonce': nonce,
+    })
+    proccess_transaction_blockchain(txn_dict)
 
 def add_new_user(username, password):
     count = 0
