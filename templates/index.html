@@ -32,7 +32,7 @@
                       <a class="nav-link" href="http://localhost:5000/my">My Page</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/funds">Add funds</a>
+                      <a class="nav-link" href="http://localhost:5000/address">Update my address</a>
                     </li>
                   </ul>
                   </nav>
@@ -61,7 +61,7 @@
                         "<div class=\"card-body\">" +
                         "<h4 class=\"card-title\">" + data[listing]["title"] + "</h4>" +
                         "<h5 class=\"card-status\">Status: " + data[listing]["status"] + "</h5>" +
-                        "<h6 class=\"card-status\">Price: $" + addComma(data[listing]["price"]) + "</h6>" +
+                        "<h6 class=\"card-status\">Price: " + addComma(data[listing]["price"]) + " ETH</h6>" +
                         "<p class=\"card-text\">" + data[listing]["description"] + "</p>" + 
                         "<a href=\"http://localhost:5000/getItem?item=" + data[listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Checkout</a>" +
                         "</div>" +

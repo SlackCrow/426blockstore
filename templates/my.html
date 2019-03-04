@@ -21,14 +21,14 @@
                       <a class="nav-link" href="http://localhost:5000/my">My Page</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/funds">Add funds</a>
+                      <a class="nav-link" href="http://localhost:5000/address">Update my address</a>
                     </li>
                   </ul>                  
                   </nav>
         <br>
 
         <div class="container"> 
-                <span class="badge badge-primary" id="b1">Balance: $</span>
+                <span class="badge badge-primary" id="b1">Balance: </span> 
                 <h3>Active</h3> 
                 <div class="row" id="p1"></div>
                 <br>
@@ -43,7 +43,7 @@
   request.onload = function () {
     var data = JSON.parse(this.response);
     console.log(data);
-    document.getElementById("b1").innerHTML = document.getElementById("b1").innerHTML + addComma(data[1]["funds"].toString());
+    document.getElementById("b1").innerHTML = document.getElementById("b1").innerHTML + addComma(data[1]["funds"].toString()) +  " ETH";
     for(var listing in data[0]) 
     {
       console.log(listing);
@@ -56,7 +56,7 @@
                         "<div class=\"card-body\">" +
                         "<h4 class=\"card-title\">" + data[0][listing]["title"] + "</h4>" +
                         "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
-                        "<h6 class=\"card-status\">Price: $" + data[0][listing]["price"] + "</h6>" +
+                        "<h6 class=\"card-status\">Price: " + data[0][listing]["price"] + " ETH</h6>" +
                         "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
                         "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
@@ -71,7 +71,7 @@
                         "<div class=\"card-body\">" +
                         "<h4 class=\"card-title\">" + data[0][listing]["title"] + "</h4>" +
                         "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
-                        "<h6 class=\"card-status\">Price: $" + addComma(data[0][listing]["price"]) + "</h6>" +
+                        "<h6 class=\"card-status\">Price: " + addComma(data[0][listing]["price"]) + " ETH</h6>" +
                         "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
                         "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
@@ -86,6 +86,10 @@
 
   function addComma(str)
   {
+    if(str.length == 1 || 2 || 3)
+    {
+      return str;
+    }
     toReturn = ""
     counter = 0
     for(i=str.length-1; i>=0; i--)

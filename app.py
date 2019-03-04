@@ -1,5 +1,6 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from tinydb import TinyDB, Query, where
+from web3 import Web3, HTTPProvider, contract
 from flask_cors import CORS
 import json
 
@@ -50,7 +51,8 @@ def add_new_user(username, password):
         'user_id': user_id,
         'username': username,
         'password': password,
-        'funds': 0
+        'funds': 0,
+        'address' : ""
     })
     return
 
@@ -99,6 +101,18 @@ def add_funds():
     else:
         return redirect("http://localhost:5000/login", code=302)
 
+@app.route('/address', methods=['GET','POST'])
+def update_address():
+    User = Query()
+    if request.remote_addr in loginList:
+        if request.method == 'POST':
+            user_table.update({'address': request.form['address']}, where('username') == currentUser)
+            return render_template("index.html")
+        return render_template('funds.html')
+    else:
+        return redirect("http://localhost:5000/login", code=302)
+
+
 @app.route('/createAccount', methods=['GET', 'POST'])
 def createAccount():
     if request.method == 'POST':
@@ -124,15 +138,19 @@ def buyItem():
     item = listing_table.search(Listing.listing_id == int(itemID))[0]
     price = int(item['price'])
     balance = user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']
-    if item['status'] == 'Sold':
-        flash('Already sold')
+    address = user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']
+    if(address == ''):
+        pass
     else:
-        if balance - price > 0:
-            user_table.update({'funds': balance-price}, where('username') == currentUser)
-            listing_table.update({'status': 'Sold'}, where('listing_id') == int(itemID))
-            flash('Successfully purchased')
+        if item['status'] == 'Sold':
+            flash('Already sold')
         else:
-            flash('Not enough fund')
+            if balance - price > 0:
+                user_table.update({'funds': balance-price}, where('username') == currentUser)
+                listing_table.update({'status': 'Sold'}, where('listing_id') == int(itemID))
+                flash('Successfully purchased')
+            else:
+                flash('Not enough fund')
     return redirect("http://localhost:5000/", code=302)
 
 @app.route('/getItem', methods=['GET','POST'])
@@ -167,7 +185,7 @@ def getItem():
                       <a class="nav-link" href="http://localhost:5000/my">My Page</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/funds">Add funds</a>
+                      <a class="nav-link" href="http://localhost:5000/address">Update my address</a>
                     </li>
                   </ul>
                   </nav>
@@ -175,7 +193,7 @@ def getItem():
 
 
         <div class="container"> 
-        <span class="badge badge-primary" id="b1">Balance: $""" + str(user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']) +"""</span>
+        <span class="badge badge-primary" id="b1">Balance: """ + str(user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']) +""" ETH</span>
                 <div class="row" id="p1">
                 <h1>Checkout</h1>  """  + """
                     <div class="col-sm-6">
@@ -184,7 +202,7 @@ def getItem():
                         <h4 class="card-title">
                         Title: """ + item['title'] + """
                         </h4>
-                        <h6 > Price: $""" + item['price'] +  """
+                        <h6 > Price: """ + item['price'] +  """ETH
                         
                         </h6>
                         <br>
