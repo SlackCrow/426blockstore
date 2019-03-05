@@ -188,7 +188,7 @@ def update_address():
 def createAccount():
     if request.method == 'POST':
         add_new_user(request.form['username'], request.form['password'])
-        return redirect(""http://" + address + ":5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
     return render_template('create_account.html')
 
 
@@ -251,16 +251,16 @@ def getItem():
 
   
     <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="http://localhost:5000">CSE4/510 Lab1</a>
+            <a class="navbar-brand" href="/">CSE4/510 Lab1</a>
             <ul class="nav nav-pills">
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/submit">Create a listing</a>
+                      <a class="nav-link" href="submit">Create a listing</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/my">My Page</a>
+                      <a class="nav-link" href="my">My Page</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/address">Update my address</a>
+                      <a class="nav-link" href="address">Update my address</a>
                     </li>
                   </ul>
                   </nav>

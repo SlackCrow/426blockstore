@@ -12,16 +12,16 @@
 
   
     <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="http://localhost:5000">CSE4/510 Lab1</a>
+            <a class="navbar-brand" href="/">CSE4/510 Lab1</a>
             <ul class="nav nav-pills">
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/submit">Create a listing</a>
+                      <a class="nav-link" href="submit">Create a listing</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/my">My Page</a>
+                      <a class="nav-link" href="my">My Page</a>
                     </li>
                     <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:5000/address">Update my address</a>
+                      <a class="nav-link" href="address">Update my address</a>
                     </li>
                   </ul>                  
                   </nav>
@@ -39,7 +39,7 @@
 </body>
 <script>
   var request = new XMLHttpRequest();
-  request.open('GET', 'http://localhost:5000/myListings', true);
+  request.open('GET', 'myListings', true);
   request.onload = function () {
     var data = JSON.parse(this.response);
     console.log(data);
@@ -58,7 +58,7 @@
                         "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
                         "<h6 class=\"card-status\">Price: " + data[0][listing]["price"] + " ETH</h6>" +
                         "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
-                        "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "<a href=\"getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
                         "</div>" +
                         "</div>";
@@ -73,7 +73,7 @@
                         "<h5 class=\"card-status\">Status: " + data[0][listing]["status"] + "</h5>" +
                         "<h6 class=\"card-status\">Price: " + addComma(data[0][listing]["price"]) + " ETH</h6>" +
                         "<p class=\"card-text\">" + data[0][listing]["description"] + "</p>" + 
-                        "<a href=\"http://localhost:5000/getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
+                        "<a href=\"getItem?item=" + data[0][listing]["listing_id"] +  "\"" + "class=\"btn btn-primary\">Check it out</a>" +
                         "</div>" +
                         "</div>" +
                         "</div>";
