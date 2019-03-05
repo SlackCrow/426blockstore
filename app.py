@@ -155,6 +155,10 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route('/test')
+def testMeta():
+    return render_template('test.html')
+
 @app.route('/funds', methods=['GET','POST'])
 def add_funds():
     User = Query()
@@ -191,11 +195,11 @@ def returnListings():
     global dictToReturn
     return json.dumps(listing_table.all())
 
-@app.route('/myListings')
+@app.route('/f')
 def returnMyListings():
     userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
     balance = w3.fromWei(w3.eth.getBalance(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']), 'ether')
-    user_table.update({'funds': int(balance)}, where('username') == currentUser)
+    user_table.update({'funds': float(balance)}, where('username') == currentUser)
     return (json.dumps([listing_table.search(where('user_id') == userId),user_table.search(where('username') == loginMap[request.remote_addr])[0]]))
 
 @app.route('/buy', methods=['GET','POST'])
@@ -205,7 +209,7 @@ def buyItem():
     item = listing_table.search(Listing.listing_id == int(itemID))[0]
     price = int(item['price'])
     balanceFromBlockchain = w3.fromWei(w3.eth.getBalance(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']), 'ether')
-    user_table.update({'funds': int(balanceFromBlockchain)}, where('username') == currentUser)
+    user_table.update({'funds': float(balanceFromBlockchain)}, where('username') == currentUser)
     balance = user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']
     address = user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']
     if(address == ''):
@@ -333,4 +337,4 @@ def login():
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
-    app.run(debug = True)
+    app.run(host= '0.0.0.0')
