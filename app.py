@@ -15,6 +15,8 @@ with open("abi.json") as f:
     info_json = json.load(f)
 abi = info_json
 
+address = "localhost"
+
 w3 = Web3(HTTPProvider(infura_url))
 w3.eth.enable_unaudited_features()
 contract = w3.eth.contract(address = contract_address, abi = abi)
@@ -168,7 +170,7 @@ def add_funds():
             return render_template("index.html")
         return render_template('funds.html')
     else:
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
 
 @app.route('/address', methods=['GET','POST'])
 def update_address():
@@ -179,14 +181,14 @@ def update_address():
             return render_template("index.html")
         return render_template('funds.html')
     else:
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
 
 
 @app.route('/createAccount', methods=['GET', 'POST'])
 def createAccount():
     if request.method == 'POST':
         add_new_user(request.form['username'], request.form['password'])
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect(""http://" + address + ":5000/login", code=302)
     return render_template('create_account.html')
 
 
@@ -224,12 +226,12 @@ def buyItem():
                 flash('Successfully purchased')
             else:
                 flash('Not enough fund')
-    return redirect("http://localhost:5000/", code=302)
+    return redirect("http://" + address + ":5000/", code=302)
 
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
     if not request.remote_addr in loginList:
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
     Listing = Query()
     itemID = request.args.get('item')
     item = listing_table.search(Listing.listing_id == int(itemID))[0]
@@ -307,17 +309,17 @@ def submitNow():
             itemId = add_new_listing(request.form['title'], request.form['description'], request.form['price'])
             global dictToReturn
             dictToReturn[itemId] = [request.form['title'],'Active',request.form['description'],request.form['price']]
-            return redirect("http://localhost:5000/", code=302) 
+            return redirect("http://" + address + ":5000/", code=302) 
         return render_template('submit.html')
     else:
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
 
 @app.route('/my')
 def returnMyPage():
     if request.remote_addr in loginList:
         return render_template('my.html')
     else:
-        return redirect("http://localhost:5000/login", code=302)
+        return redirect("http://" + address + ":5000/login", code=302)
 
 # Route for handling the login page logic
 @app.route('/login', methods=['GET', 'POST'])
@@ -333,7 +335,7 @@ def login():
             currentUser = request.form['username']
         else:
             error = 'Invalid Credentials. Please try again.'
-        return redirect("http://localhost:5000/", code=302)
+        return redirect("http://" + address + ":5000/", code=302)
     return render_template('login.html', error=error)
 
 if __name__ == '__main__':
