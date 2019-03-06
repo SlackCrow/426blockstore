@@ -197,7 +197,7 @@ def returnListings():
     global dictToReturn
     return json.dumps(listing_table.all())
 
-@app.route('/f')
+@app.route('/myListings')
 def returnMyListings():
     userId = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
     balance = w3.fromWei(w3.eth.getBalance(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']), 'ether')

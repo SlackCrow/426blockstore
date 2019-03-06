@@ -46,7 +46,7 @@
 </body>
 <script>
   var request = new XMLHttpRequest();
-  request.open('GET', 'http://localhost:5000/getListings', true);
+  request.open('GET', window.location.href + 'getListings', true);
   request.onload = function () {
     var data = JSON.parse(this.response);
     console.log(data);

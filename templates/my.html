@@ -38,8 +38,9 @@
           
 </body>
 <script>
+    console.log(window.location.href);
   var request = new XMLHttpRequest();
-  request.open('GET', 'myListings', true);
+  request.open('GET',  'myListings', true);
   request.onload = function () {
     var data = JSON.parse(this.response);
     console.log(data);
