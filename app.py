@@ -229,12 +229,12 @@ def buyItem():
         if item['status'] == 'Sold':
             flash('Already sold')
         else:
-            if balance - price > 0:
+            if (txID != ''):
                 user_table.update({'funds': balance-price}, where('username') == currentUser)
                 listing_table.update({'status': 'Sold'}, where('listing_id') == int(itemID))
-                flash('Successfully purchased')
+                flash('Successfully purchased, the transaciton TXID is ' + txID)
             else:
-                flash('Not enough fund')
+                flash('Error')
     return redirect("http://" + address + ":5000/", code=302)
 
 # clean this later, ugly as hell
