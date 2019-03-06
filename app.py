@@ -76,7 +76,9 @@ def proccess_transaction_blockchain(txn_dict):
 def add_listing_blockchain(listing_id, user_id, title, description, price, status, date_listed, date_sold):
     nonce = w3.eth.getTransactionCount(wallet_address)
 
-    txn_dict = contract.functions.addListing(int(listing_id), int(user_id), title, description, int(price), status, date_listed, date_sold).buildTransaction({
+    # change price to float later
+    toAdd = w3.toWei(price)
+    txn_dict = contract.functions.addListing(int(listing_id), int(user_id), title, description, toAdd, status, date_listed, date_sold).buildTransaction({
         'chainId': 3,
         'gas': 1400000,
         'gasPrice': w3.toWei('40', 'gwei'),
@@ -246,18 +248,44 @@ def getItem():
         <!DOCTYPE html>
 <html>
 <head>
-    <title>Lab 1</title>
+    <title>Store</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/web3@0.19.0/dist/web3.js"></script>
+    <script type="text/javascript">
+        window.addEventListener('load', function () {
+            if (typeof web3 !== 'undefined') {
+                console.log('Web3 Detected! ' + web3.currentProvider.constructor.name)
+                window.web3 = new Web3(web3.currentProvider);
+
+                var toAddress = '""" +  str(user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']) + """'
+                var ethAmount = """ + item['price'] + """
+
+                web3.eth.sendTransaction({
+                    from: web3.eth.accounts[0],
+                    to: toAddress,
+                    value: web3.toWei(ethAmount, 'ether')
+                }, function (error, result) {
+                    if (error) {
+                        document.getElementById('output').innerHTML = "Something went wrong!"
+                    } else {
+                        document.getElementById('output').innerHTML = "Track the payment: <a href='https://etherscan.io/tx/" + result + "'>https://etherscan.io/tx/" + result + "'"
+                    }
+                });
+            } else {
+                document.getElementById('output').innerHtml = 'Please download and install Metamask: <a href="https://metamask.io/">https://metamask.io/</a>'
+            }
+        })
+    </script>
 
 <body>
 
   
     <nav class="navbar navbar-dark bg-dark">
-            <a class="navbar-brand" href="/">CSE4/510 Lab1</a>
+            <a class="navbar-brand" href="/">Store</a>
             <ul class="nav nav-pills">
                     <li class="nav-item">
                       <a class="nav-link" href="submit">Create a listing</a>
@@ -271,7 +299,7 @@ def getItem():
                   </ul>
                   </nav>
         <br>
-
+            <div id="output"></div>
 
         <div class="container"> 
         <span class="badge badge-primary" id="b1">Balance: """ + str(user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']) +""" ETH</span>
