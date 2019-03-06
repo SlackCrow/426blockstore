@@ -209,6 +209,7 @@ def returnMyListings():
 @app.route('/buy', methods=['GET','POST'])
 def buyItem():
     itemID = request.args.get('itemID')
+    txID = request.args.get('txID')
     Listing = Query()
     item = listing_table.search(Listing.listing_id == int(itemID))[0]
     price = int(item['price'])
@@ -236,6 +237,7 @@ def buyItem():
                 flash('Not enough fund')
     return redirect("http://" + address + ":5000/", code=302)
 
+# clean this later, ugly as hell
 @app.route('/getItem', methods=['GET','POST'])
 def getItem():
     if not request.remote_addr in loginList:
@@ -273,6 +275,8 @@ def getItem():
                         document.getElementById('output').innerHTML = "Something went wrong!"
                     } else {
                         document.getElementById('output').innerHTML = "Track the payment: <a href='https://etherscan.io/tx/" + result + "'>https://etherscan.io/tx/" + result + "'"
+                        var url= " """  "/buy?itemID=" + str(itemID)+ "&txID=" +  """" + result; 
+                        window.location = url; 
                     }
                 });
             } else {
