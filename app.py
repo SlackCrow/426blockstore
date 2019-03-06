@@ -214,6 +214,12 @@ def buyItem():
     user_table.update({'funds': float(balanceFromBlockchain)}, where('username') == currentUser)
     balance = user_table.search(where('username') == loginMap[request.remote_addr])[0]['funds']
     address = user_table.search(where('username') == loginMap[request.remote_addr])[0]['address']
+
+    # listing_id = itemID
+    # buyer_id = user_table.search(where('username') == loginMap[request.remote_addr])[0]['user_id']
+    # seller_id = listing_table.search(where('listing_id') == listing_id)[0]['user_id']
+    # settle_payment_blockchain(listing_id, buyer_id, seller_id)
+
     if(address == ''):
         pass
     else:
