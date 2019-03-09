@@ -62,10 +62,9 @@ def proccess_transaction_blockchain(txn_dict):
     tx_receipt = w3.eth.getTransactionReceipt(result)
     count = 0
     while tx_receipt is None and (count < 30):
-        time.sleep(10)
-
+        time.sleep(5)
         tx_receipt = w3.eth.getTransactionReceipt(result)
-
+        count += 5
         print(tx_receipt)
 
     if tx_receipt is None:
@@ -73,24 +72,9 @@ def proccess_transaction_blockchain(txn_dict):
         return False
     return True
 
-def add_listing_blockchain(listing_id, user_id, title, description, price, status, date_listed, date_sold):
+def buy_blockchain(listing_id, buyer_id, seller_id, amount):
     nonce = w3.eth.getTransactionCount(wallet_address)
-
-    # change price to float later
-    toAdd = w3.toWei(price)
-    txn_dict = contract.functions.addListing(int(listing_id), int(user_id), title, description, toAdd, status, date_listed, date_sold).buildTransaction({
-        'chainId': 3,
-        'gas': 1400000,
-        'gasPrice': w3.toWei('40', 'gwei'),
-        'nonce': nonce,
-    })
-    proccess_transaction_blockchain(txn_dict)
-
-
-def settle_payment_blockchain(listing_id, buyer_id, seller_id):
-    nonce = w3.eth.getTransactionCount(wallet_address)
-
-    txn_dict = contract.functions.settlePayment(int(listing_id), int(buyer_id), int(seller_id)).buildTransaction({
+    txn_dict = contract.functions.buy(int(listing_id), int(buyer_id), int(seller_id), int(amount)).buildTransaction({
         'chainId': 3,
         'gas': 1400000,
         'gasPrice': w3.toWei('40', 'gwei'),
@@ -100,8 +84,7 @@ def settle_payment_blockchain(listing_id, buyer_id, seller_id):
 
 def add_new_user_blockchain(user_id, username, password):
     nonce = w3.eth.getTransactionCount(wallet_address)
-
-    txn_dict = contract.functions.addUser(int(user_id), username, password, 1000).buildTransaction({
+    txn_dict = contract.functions.register(int(user_id)).buildTransaction({
         'chainId': 3,
         'gas': 140000,
         'gasPrice': w3.toWei('40', 'gwei'),
